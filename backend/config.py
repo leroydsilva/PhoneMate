@@ -18,7 +18,7 @@ class DevConfig(Config):
     SQLALCHEMY_ECHO=True
 
 class ProdConfig(Config):
-    pass
+    DEBUG=config('DEBUG')
 
 class TestConfig(Config):
     TESTING=True

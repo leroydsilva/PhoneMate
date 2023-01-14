@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from 'react'
-import Phone from './Phone'
-import Button from 'react-bootstrap/Button';
+import Product from './Product';
 import axios from 'axios';
+import scrollreveal from "scrollreveal"
+import { LinearProgress } from '@material-ui/core';
+
 const Quiz = () => {
   const [phones, setPhones] = useState([])
   const [over, setover] = useState(false)
   const [currentQuestion, setcurrentQuestion] = useState(0)
+  const [Loading, setLoading] = useState(false)
   const [apicall, setapicall] = useState({
     "Camera" :false,
     "Storage" : false,
@@ -91,17 +94,24 @@ const handleAnswer = async(A) => {
           apicall[question.AnswerText[0].type]=question.Answer
       )
     )) 
+    setLoading(true)
     console.log(apicall)
     await fetchPhones() 
+    setLoading(false)
     setover(true)
     
 
     }
   }
 
+  // const sleep = ms => new Promise(
+  //   resolve => setTimeout(resolve, ms)
+  // );
+
   const fetchPhones = async () =>{
     try{
-      await axios.post("phone/Phone/Camera",apicall).then((response)=>{
+      // await sleep(5000)
+      await axios.post("phone/Phone/",apicall).then((response)=>{
         const res = response.data
         setPhones(res);
       })
@@ -110,24 +120,72 @@ const handleAnswer = async(A) => {
     }
   }
   
+  useEffect(() => {
+    const registerAnimations = () => {
+      const sr = scrollreveal({
+        origin: "bottom",
+        distance: "80px",
+        duration: 1000,
+        reset: false,
+      });
+      sr.reveal(
+        `
+        .title-container,
+        .container 
+    `,
+        {
+          interval: 500,
+        }
+      );
+    };
+    registerAnimations();
+  }, []);
+
+
   return (
     <>
-    { over ? (<Phone phones={phones}/>) :  (
-    <div>
-         <div> 
-        <span>{currentQuestion+1}</span>/<span>{Questionbank.length}</span>
-        <div>
-          <h2>{Questionbank[currentQuestion].Question}</h2>
-          </div>
-          <div>
-            {Questionbank[currentQuestion].AnswerText.map((Ans) =>{
-              return(
-                <Button key={Ans.Option} variant="outline-primary" className='' onClick={()=>{handleAnswer(Ans)}} >{Ans.Option}</Button>
-              )
-            })}
-            </div>
+    { Loading ? <LinearProgress/> :
+        
+        over ? (<Product phones={phones}/>) :  (
+    // <div className='home'>
+    //      <div className='container mx-3 py-3'> 
+    //     <div className='title-container'>
+    //       {/* <span>{currentQuestion+1}</span><span>/</span><span>{Questionbank.length}</span> */}
+    //       <h4>{Questionbank[currentQuestion].Question}</h4>
+    //       </div>
+    //       <div className="categories">
+    //         {Questionbank[currentQuestion].AnswerText.map((Ans) =>{
+    //           return(
+    //             <div className="category" onClick={()=>{handleAnswer(Ans)}} key={Ans.Option}>
+    //                 <h4 className=''>{Ans.Option}</h4>
+    //             </div>
+    //           )
+    //         })}
+    //         </div>
+    //   </div>
+    // </div>
+
+    <div className="services-container mx-3 py-3">
+    <div className="container">
+      <div className="service one">
+        <p>{currentQuestion+1} / {Questionbank.length}</p>
+        <h4>{Questionbank[currentQuestion].Question}</h4>
       </div>
-    </div>
+      {Questionbank[currentQuestion].AnswerText.map((Ans) =>{
+              return(
+      <div className="service two" onClick={()=>{handleAnswer(Ans)}} key={Ans.Option}>
+        <div className="content">
+          <h4>{Ans.Option}</h4>
+        </div>
+        <div className="image">
+        </div>
+      </div>
+          )
+                  })}
+      </div>
+  </div>
+
+
     )
       }
   </>

@@ -19,7 +19,7 @@ from flask_cors import CORS
 # App Config.
 #----------------------------------------------------------------------------#
 def create_app(config):
-    app = Flask(__name__)
+    app = Flask(__name__, static_url_path='/',static_folder='./frontend/build')
     app.config.from_object(config)
     app.config['MYSQL_HOST'] = 'localhost'
     app.config['MYSQL_DATABASE_USER'] = 'root'
@@ -30,6 +30,14 @@ def create_app(config):
     api=Api(app,doc='/docs')
     api.add_namespace(phone_ns)
     CORS(app)
+
+    @app.route('/')
+    def index():
+        return app.send_static_file('index.html')
+
+    @app.errorhandler(404)
+    def not_found_error(error):
+        app.send_static_file('index.html')
 
     @app.shell_context_processor
     def make_shell_context():
@@ -101,9 +109,7 @@ def login_required(test):
 #     return render_template('errors/500.html'), 500
 
 
-# @app.errorhandler(404)
-# def not_found_error(error):
-#     return render_template('errors/404.html'), 404
+
 
 
 # if not app.debug:

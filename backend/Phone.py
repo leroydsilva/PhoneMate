@@ -10,7 +10,8 @@ Phone_model=phone_ns.model(
     {
         "Phone_id":fields.Integer(),
         "Phone_name":fields.String(),
-        "Phone_price":fields.Integer()
+        "Phone_price":fields.Integer(),
+        "Phone_img" : fields.String()
     }
 )
 # to add strict validation in your api use the below @api.expect is not going to validate
@@ -59,7 +60,7 @@ class PhoneResource(Resource):
         results = cursor.fetchall()
         return results
 
-@phone_ns.route('/Phone/Camera')
+@phone_ns.route('/Phone/')
 class PhoneResource(Resource):
     @phone_ns.marshal_with(Phone_model)
     def post(self):
@@ -107,7 +108,7 @@ class PhoneResource(Resource):
         {Ram} and {Display} and {Protection} and {Refresh} and {Performance}
         '''     
         cursor.execute(sql)
-        results = cursor.fetchmany(127)
+        results = cursor.fetchall()
         return results
 
   
