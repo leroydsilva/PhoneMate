@@ -29,11 +29,11 @@ def create_app(config):
     mysql.init_app(app)
     api=Api(app,doc='/docs')
     api.add_namespace(phone_ns)
-    CORS(app)
+    # CORS(app)
 
     @app.route('/')
     def index():
-        return app.send_static_file('index.html')
+        return send_from_directory(app.static_folder,'index.html')
 
     @app.errorhandler(404)
     def not_found_error(error):

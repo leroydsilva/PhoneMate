@@ -1,3 +1,17 @@
 open-ai.txt
 phone_backup.sql
 phone_backup_1.sql
+*.pyc
+.DS_Store
+myenv
+venv
+__pycache__
+templates
+_updated
+static
+*.env
+*.md
+*.dev
+models.py
+form.py
+fabfile.py
