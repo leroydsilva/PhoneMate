@@ -9,12 +9,13 @@ import json
 from mysql import mysql
 from logging import Formatter, FileHandler
 from wtforms import TextField, BooleanField
+from flask.helpers import send_from_directory
 import os
 # from flask_mysqldb import MySQL
 from flask_restx import Api
 
 from Phone import phone_ns
-from flask_cors import CORS
+from flask_cors import CORS,cross_origin
 #----------------------------------------------------------------------------#
 # App Config.
 #----------------------------------------------------------------------------#
@@ -29,9 +30,10 @@ def create_app(config):
     mysql.init_app(app)
     api=Api(app,doc='/docs')
     api.add_namespace(phone_ns)
-    # CORS(app)
+    CORS(app)
 
     @app.route('/')
+    @cross_origin()
     def index():
         return send_from_directory(app.static_folder,'index.html')
 
