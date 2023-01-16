@@ -20,7 +20,7 @@ from flask_cors import CORS,cross_origin
 # App Config.
 #----------------------------------------------------------------------------#
 def create_app(config):
-    app = Flask(__name__, static_url_path='/',static_folder='./frontend/build')
+    app = Flask(__name__, static_url_path='',static_folder='frontend/build')
     app.config.from_object(config)
     app.config['MYSQL_HOST'] = 'localhost'
     app.config['MYSQL_DATABASE_USER'] = 'root'
@@ -33,13 +33,12 @@ def create_app(config):
     CORS(app)
 
     @app.route('/')
-    @cross_origin()
     def index():
-        return send_from_directory(app.static_folder,'index.html')
+        return app.send_static_file('index.html')
 
-    @app.errorhandler(404)
-    def not_found_error(error):
-        app.send_static_file('index.html')
+    # @app.errorhandler(404)
+    # def not_found_error(error):
+    #     app.send_static_file('index.html')
 
     @app.shell_context_processor
     def make_shell_context():
