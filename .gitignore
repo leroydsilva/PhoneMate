@@ -12,6 +12,5 @@ static
 *.env
 *.md
 *.dev
-models.py
 form.py
 fabfile.py

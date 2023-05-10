@@ -6,45 +6,46 @@ from flask import Flask
 # from flask.ext.sqlalchemy import SQLAlchemy
 import logging
 import json
-from mysql import mysql
 from logging import Formatter, FileHandler
-from wtforms import TextField, BooleanField
+# from wtforms import TextField, BooleanField
 from flask.helpers import send_from_directory
 import os
 # from flask_mysqldb import MySQL
 from flask_restx import Api
-
-from Phone import phone_ns
+from models import db
+# from mysql import mysql
 from flask_cors import CORS,cross_origin
+
 #----------------------------------------------------------------------------#
 # App Config.
 #----------------------------------------------------------------------------#
 def create_app(config):
-    app = Flask(__name__, static_url_path='/home',static_folder='frontend/build')
-    app.config.from_object(config)
-    app.config['MYSQL_HOST'] = 'localhost'
-    app.config['MYSQL_DATABASE_USER'] = 'root'
-    app.config['MYSQL_DATABASE_PASSWORD'] = ''
-    app.config['MYSQL_DATABASE_DB'] = 'flask'
-
-    mysql.init_app(app)
+    app = Flask(__name__,)
     api=Api(app,doc='/docs')
-    api.add_namespace(phone_ns)
+    app.config.from_object(config)
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+    
+    
+    # mysql.init_app(app)
     CORS(app)
+    db.init_app(app)
+    # db.reflect()
+    from Phone import phone_ns
+    api.add_namespace(phone_ns)
+    
 
     @app.route('/')
     def index():
-        return "no result bro"
+        return "yo bro"
 
-    @app.errorhandler(404)
-    def not_found_error(error):
-        return app.send_static_file('index.html')
 
-    @app.shell_context_processor
-    def make_shell_context():
-        return {
-            "mysql":mysql
-        }
+    @app.after_request
+    def after_request(response):
+        response.headers.add('Access-Control-Allow-Origin', '*')
+        response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
+        response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE')
+        return response
 
     return app
 

@@ -15,12 +15,12 @@ class Config:
 
 # Connect to the database
 class DevConfig(Config):
-    # SQLALCHEMY_DATABASE_URI = 'sqlite:///' + os.path.join(basedir, 'database.db')
-    DEBUG=True
-    SQLALCHEMY_ECHO=True
+    SQLALCHEMY_DATABASE_URI = config('SQLALCHEMY_DATABASE_URI')
+    DEBUG = True
+
 
 class ProdConfig(Config):
-    DEBUG=os.getenv('DEBUG',False)
+    SQLALCHEMY_DATABASE_URI = config('SQLALCHEMY_DATABASE_URI')
 
 class TestConfig(Config):
     TESTING=True
